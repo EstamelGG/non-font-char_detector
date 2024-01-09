@@ -7,6 +7,8 @@
 
 脚本 font_detect_from_black 从系统常用的字体文件中绘制要测试的字符，通过计算图形中笔画痕迹的面积占比来找到未设置字形的编码
 
+脚本 font_detect_from_black_allFonts 从系统所有的字体文件中绘制要测试的字符，通过计算图形中笔画痕迹的面积占比来找到未设置字形的编码
+
 英语：Hello, World
 
 德语：Hallo, Welt
