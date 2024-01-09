@@ -51,6 +51,7 @@ fonts = [
     r'C:\Windows\Fonts\msjh.ttc',  # 微软正黑
     r'C:\Windows\Fonts\malgun.ttf',  # 韩语
     r'C:\Windows\Fonts\msgothic.ttc',  # 日语
+    r'C:\Windows\Fonts\LeelawUI.ttf',  # 泰语
 ]
 
 

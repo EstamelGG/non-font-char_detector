@@ -65,6 +65,6 @@ def SearchandDraw(char):
     else:
         print("未找到该文本的字形: %s" % char)
 
-SearchandDraw("ن")
+SearchandDraw("A")
 
 
