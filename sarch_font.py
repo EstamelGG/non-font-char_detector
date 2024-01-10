@@ -44,7 +44,12 @@ def findChar(char, font_path, fontnum=-1):
         return False
 
 
+def char2un(char):
+    return r"\u%s" % hex(ord(char))[2:].zfill(4)
+
 def SearchandDraw(char):
+    if len(char) != 1:
+        char = char[0]
     font_dir = r"c:\windows\fonts"
     found_fonts = []
     for file in os.listdir(font_dir):
@@ -59,12 +64,12 @@ def SearchandDraw(char):
             found_fonts.append(file)
 
     if len(found_fonts) > 0:
-        print("在 %s 中找到了该文本: %s" % ("\r\n".join(found_fonts), char))
+        print("在 %s 中找到了该文本: %s(%s)" % ("\r\n".join(found_fonts), char, char2un(char)))
         for fontfile in found_fonts:
             rat = display(char, fontfile, show=1)
     else:
-        print("未找到该文本的字形: %s" % char)
+        print("未找到该文本的字形: %s(%s)" % (char, char2un(char)))
 
-SearchandDraw("A")
+SearchandDraw("ㅤ")
 
 
