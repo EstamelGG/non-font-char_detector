@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from fontTools.ttLib import TTFont
 from fontTools.pens.freetypePen import FreeTypePen
 from fontTools.misc.transform import Offset

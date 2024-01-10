@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from fontTools.ttLib import TTFont
 from fontTools.pens.areaPen import AreaPen
 from tqdm import tqdm

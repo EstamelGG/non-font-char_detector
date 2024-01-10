@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from fontTools.ttLib import TTFont
 
 #通过特定字体文件的字符映射表来判断是否字符可见
