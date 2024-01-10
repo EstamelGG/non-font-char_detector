@@ -5,20 +5,14 @@ from fontTools.misc.transform import Offset
 from fontTools.pens.areaPen import AreaPen
 import os
 
+
 # 从系统所有字体中寻找特定字符并绘制图形
 # require freetype-py,matplotlib
 
-def display(char, font_path, show):
-    if str(font_path).endswith(".ttf"):
-        fontnum = -1
-    elif str(font_path).endswith(".ttc"):
-        fontnum = 0
-    else:
-        return 0
-    font = TTFont(font_path, fontNumber=fontnum)
+def display(char, GlyphSet, Cmap, font, show):
     pen = FreeTypePen(None)
-    glyph_set = font.getGlyphSet()
-    glyph = glyph_set[font.getBestCmap()[ord(char)]]
+    glyph_set = GlyphSet
+    glyph = glyph_set[Cmap[ord(char)]]
     try:
         glyph.draw(pen)
         width, ascender, descender = glyph.width, font['OS/2'].usWinAscent, -font['OS/2'].usWinDescent
@@ -39,6 +33,25 @@ def display(char, font_path, show):
     return rat
 
 
+def font_dict(file_list):
+    res = {}
+    for filename in file_list:
+        file = filename
+        if str(file).endswith(".ttf"):
+            fontnum = -1
+        elif str(file).endswith(".ttc"):
+            fontnum = 0
+        else:
+            continue
+        font = TTFont(file, fontNumber=fontnum)
+        if file not in res.keys():
+            res[file] = {}
+            res[file]["font"] = font
+            res[file]["Cmap"] = font.getBestCmap()
+            res[file]["GlyphSet"] = font.getGlyphSet()
+    return res
+
+
 def findChar(char, font_path, fontnum=-1):
     font = TTFont(font_path, fontNumber=fontnum)
     if font.getBestCmap() and ord(char) in font.getBestCmap().keys():
@@ -50,21 +63,15 @@ def findChar(char, font_path, fontnum=-1):
 def char2un(char):
     return r"\u%s" % hex(ord(char))[2:].zfill(4)
 
+
 def SearchandDraw(char, maxDraw=-1):
     if len(char) != 1:
         char = char[0]
-    font_dir = r"c:\windows\fonts"
     found_fonts = []
-    for file in os.listdir(font_dir):
-        file = os.path.join(font_dir, file)
-        if str(file).endswith(".ttf"):
-            fontnum = -1
-        elif str(file).endswith(".ttc"):
-            fontnum = 0
-        else:
-            continue
-        if findChar(char, file, fontnum):
-            found_fonts.append(file)
+    for key in fontDb.keys():
+        cmap = fontDb[key]["Cmap"]
+        if cmap and ord(char) in cmap.keys():
+            found_fonts.append(key)
 
     if len(found_fonts) > 0:
         print("在 %s 中找到了该文本: %s(%s)" % ("\r\n".join(found_fonts), char, char2un(char)))
@@ -75,10 +82,13 @@ def SearchandDraw(char, maxDraw=-1):
                 show = 0
             if maxDraw == -1:
                 show = 1
-            display(char, fontfile, show=show)
+            display(char, fontDb[fontfile]["GlyphSet"], fontDb[fontfile]["Cmap"], fontDb[fontfile]["font"], show=show)
     else:
         print("未找到该文本的字形: %s(%s)" % (char, char2un(char)))
 
+
+print("创建字体库索引...")
+font_dir = r"c:\windows\fonts"
+filelist = [os.path.join(font_dir, x) for x in os.listdir(font_dir)]
+fontDb = font_dict(filelist)  # 创建字体库索引
 SearchandDraw("ㅤ", 3)
-
-

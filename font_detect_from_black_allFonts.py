@@ -7,17 +7,10 @@ import os
 # 通过字符图形的笔画比例来判断字符是否可视化
 # require freetype-py,matplotlib
 
-def display(char, font_path):
-    if str(font_path).endswith(".ttf"):
-        fontnum = -1
-    elif str(font_path).endswith(".ttc"):
-        fontnum = 0
-    else:
-        return 0
-    font = TTFont(font_path, fontNumber=fontnum)
+def display(char, GlyphSet, Cmap, font):
     pen = AreaPen()
-    glyph_set = font.getGlyphSet()
-    glyph = glyph_set[font.getBestCmap()[ord(char)]]
+    glyph_set = GlyphSet
+    glyph = glyph_set[Cmap[ord(char)]]
     width, ascender, descender = glyph.width, font['OS/2'].usWinAscent, -font['OS/2'].usWinDescent
     height = ascender - descender
     if width == 0:
@@ -36,6 +29,23 @@ def display(char, font_path):
         rat = -1
     return rat
 
+def font_dict(file_list):
+    res = {}
+    for filename in file_list:
+        file = filename
+        if str(file).endswith(".ttf"):
+            fontnum = -1
+        elif str(file).endswith(".ttc"):
+            fontnum = 0
+        else:
+            continue
+        font = TTFont(file, fontNumber=fontnum)
+        if file not in res.keys():
+            res[file] = {}
+            res[file]["font"] = font
+            res[file]["Cmap"] = font.getBestCmap()
+            res[file]["GlyphSet"] = font.getGlyphSet()
+    return res
 
 def findChar(char, font_path, fontnum=-1):
     font = TTFont(font_path, fontNumber=fontnum)
@@ -48,7 +58,7 @@ def findChar(char, font_path, fontnum=-1):
 
 
 # 指定字体文件路径
-fonts = r'C:\Windows\Fonts'
+font_dir = r'C:\Windows\Fonts'
 
 
 def invisible_check(text):
@@ -56,21 +66,15 @@ def invisible_check(text):
     invisible = []
     for char in text:
         found_fonts = []
-        for file in os.listdir(fonts):
-            file = os.path.join(fonts, file)
-            if str(file).endswith(".ttf"):
-                fontnum = -1
-            elif str(file).endswith(".ttc"):
-                fontnum = 0
-            else:
-                continue
-            if findChar(char, file, fontnum):
-                found_fonts.append(file)
+        for key in fontDb.keys():
+            cmap = fontDb[key]["Cmap"]
+            if cmap and ord(char) in cmap.keys():
+                found_fonts.append(key)
 
         if len(found_fonts) > 0:
             ratlist = []
             for fontfile in found_fonts:
-                rat = display(char, fontfile)
+                rat = display(char, fontDb[fontfile]["GlyphSet"], fontDb[fontfile]["Cmap"], fontDb[fontfile]["font"])
                 ratlist.append(rat)
             if min(ratlist) == 0:
                 invisible.append(r"\u%s" % hex(ord(char))[2:].zfill(4))
@@ -83,7 +87,9 @@ def invisible_check(text):
     if len(invisible) > 0:
         print("[!]在所选字体下的不可见字符：%s" % (",".join(invisible)))
 
-
+print("创建字体库索引...")
+filelist = [os.path.join(font_dir, x) for x in os.listdir(font_dir)]
+fontDb = font_dict(filelist)  # 创建字体库索引
 while True:
     text = input(">>> 输入要测试的字符串:")
     invisible_check(text)
