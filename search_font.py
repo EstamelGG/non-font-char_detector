@@ -1,6 +1,4 @@
 from fontTools.ttLib import TTFont
-from fontTools.pens.recordingPen import RecordingPen
-from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.freetypePen import FreeTypePen
 from fontTools.misc.transform import Offset
 from fontTools.pens.areaPen import AreaPen
@@ -24,12 +22,16 @@ def display(char, font_path, show):
         glyph.draw(pen)
         width, ascender, descender = glyph.width, font['OS/2'].usWinAscent, -font['OS/2'].usWinDescent
         height = ascender - descender
+        if width == 0:
+            width = 500
+        if height == 0:
+            height = 1000
         if show:
-            pen.show(width=width, height=height, transform=Offset(0, -descender))
+            pen.show(width=width, height=height, transform=Offset(0, -descender), contain=True)
         pen = AreaPen()
         glyph.draw(pen)
         blackarea = abs(pen.value)
-        total_area = glyph.width * (ascender + descender)
+        total_area = width * height
         rat = blackarea / total_area
     except:
         rat = -1
@@ -72,7 +74,7 @@ def SearchandDraw(char, maxDraw=-1):
                 show = 0
             if maxDraw == -1:
                 show = 1
-            rat = display(char, fontfile, show=show)
+            display(char, fontfile, show=show)
     else:
         print("未找到该文本的字形: %s(%s)" % (char, char2un(char)))
 
