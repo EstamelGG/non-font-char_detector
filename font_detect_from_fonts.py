@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from fontTools.ttLib import TTFont
 
-#通过特定字体文件的字符映射表来判断是否字符可见
+#通过特定字体文件的字符映射表来判断是否字符可见，实际上是检测字符串中的unicode编码是否都分配了字符
 
 def find_missing_glyphs(font_path, fontnum=-1):
     # 加载字体文件
@@ -67,7 +67,7 @@ while True:
     text = input(">>> input: ")
     invisible, visible = check_string(str(text), missing)
     if len(invisible) > 0:
-        print("<<< [!]存在不可见字符: %s" % (",".join(invisible)))
-        print("<<< [!]可见部分: %s" % ("".join(visible)))
+        print("<<< [!]存在未分配字符的编码: %s" % (",".join(invisible)))
+        print("<<< [!]有字符部分: %s" % ("".join(visible)))
     else:
-        print("<<< [+]均可见: %s" % ("".join(visible)))
+        print("<<< [+]均有字符: %s" % ("".join(visible)))
