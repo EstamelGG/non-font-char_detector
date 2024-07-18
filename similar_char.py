@@ -59,8 +59,8 @@ input_char = input("请输入一个字符 (a-z 或 A-Z)：")
 similar_char = get_random_similar_character(input_char)
 print(f"输入字符 '{input_char}' 的一个随机相似字符是 '{similar_char}'")
 
-filename = ""
-for key in similar_characters:
-    filename += similar_characters[key][0]
-with open('./%s.txt' % filename, 'a') as f:
-    f.write()
+# filename = ""
+# for key in similar_characters:
+#     filename += similar_characters[key][0]
+# with open('./%s.txt' % filename, 'a') as f:
+#     f.write()
