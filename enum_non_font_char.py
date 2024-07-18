@@ -2,6 +2,7 @@
 from fontTools.ttLib import TTFont
 from fontTools.pens.areaPen import AreaPen
 from tqdm import tqdm
+import os
 
 with open('unfont-chars.txt', 'w') as f:
     pass
@@ -58,6 +59,17 @@ def font_dict(file_list):
             res[file]["GlyphSet"] = font.getGlyphSet()
     return res
 
+def create_test_file(char,i):
+    character = "%s" % hex(ord(chr(i)))[2:].zfill(4)
+    filename = '%s-A%sB' % (character, char)
+    if not os.path.exists("./samples"):
+        # 如果目录不存在，则创建目录
+        os.makedirs("./samples")
+    try:
+        with open('./samples/%s.txt'%filename, 'a') as f:
+            f.write()
+    except:
+        pass
 
 def invisible_check(char):
     visible = []
@@ -87,12 +99,12 @@ def invisible_check(char):
 # 指定字体文件路径
 font_dir = [
     r'C:\Windows\Fonts\segoeui.ttf',  # windows系统默认
-    r'C:\Windows\Fonts\arial.ttf',  # arial,常用字体
-    r'C:\Windows\Fonts\msyh.ttc',  # 微软雅黑
-    r'C:\Windows\Fonts\msjh.ttc',  # 微软正黑
-    r'C:\Windows\Fonts\malgun.ttf',  # 韩语
-    r'C:\Windows\Fonts\msgothic.ttc',  # 日语
-    r'C:\Windows\Fonts\LeelawUI.ttf',  # 泰语
+    # r'C:\Windows\Fonts\arial.ttf',  # arial,常用字体
+    # r'C:\Windows\Fonts\msyh.ttc',  # 微软雅黑
+    # r'C:\Windows\Fonts\msjh.ttc',  # 微软正黑
+    # r'C:\Windows\Fonts\malgun.ttf',  # 韩语
+    # r'C:\Windows\Fonts\msgothic.ttc',  # 日语
+    # r'C:\Windows\Fonts\LeelawUI.ttf',  # 泰语
 ]
 
 print("创建字体库索引...")
@@ -108,6 +120,7 @@ for i in tqdm(targets, desc="正在检测", leave=False):
     output = "\\u%s" % hex(ord(chr(i)))[2:].zfill(4)
     if char:
         res.append(output)
+        create_test_file(char,i)
         with open('unfont-chars.txt', 'a') as f:
             f.write(str(output) + "\n")
     else:

@@ -5,7 +5,7 @@
 
 脚本 search_font 从系统所有字体文件中提取指定字符的字形并绘制。
 
-脚本 enum_non_font_char 从系统所有字体文件中枚举无字形字符并输出到unfont-chars.txt中。
+脚本 enum_non_font_char 从系统所有字体文件中枚举无字形字符并输出到unfont-chars.txt中。同时该脚本会创建大量 txt 文件，可以肉眼查看各种字符在系统资源管理器中展示的效果。
 
 脚本 font_detect_from_fonts 从系统常用的字体文件中提取未设置字形的编码。
 
